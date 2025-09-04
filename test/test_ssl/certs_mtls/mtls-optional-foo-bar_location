@@ -1,4 +1,0 @@
-if ($ssl_client_verify = SUCCESS) {
-    add_header Content-Type text/plain;
-    return 418 'ssl_client_verify is SUCCESS';
-}

@@ -1,4 +1,0 @@
-# This file should trump the file without the hash.
-location / {
-    return 418;
-}

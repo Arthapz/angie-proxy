@@ -1,5 +1,0 @@
-services:
-  nginx-proxy:
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ${PYTEST_MODULE_PATH}/htpasswd:/etc/nginx/htpasswd:ro

@@ -30,8 +30,8 @@ function _parse_false() {
 }
 
 function _print_version {
-    if [[ -n "${NGINX_PROXY_VERSION:-}" ]]; then
-        echo "Info: running nginx-proxy version ${NGINX_PROXY_VERSION}"
+    if [[ -n "${ANGIE_PROXY_VERSION:-}" ]]; then
+        echo "Info: running angie-proxy version ${ANGIE_PROXY_VERSION}"
     fi
 }
 
@@ -43,8 +43,8 @@ function _check_unix_socket() {
 		if [[ ! -S ${SOCKET_FILE} ]]; then
 			cat >&2 <<-EOT
 				ERROR: you need to share your Docker host socket with a volume at ${SOCKET_FILE}
-				Typically you should run your nginxproxy/nginx-proxy with: \`-v /var/run/docker.sock:${SOCKET_FILE}:ro\`
-				See the documentation at: https://github.com/nginx-proxy/nginx-proxy/#usage
+				Typically you should run your arthapz/angie-proxy with: \`-v /var/run/docker.sock:${SOCKET_FILE}:ro\`
+				See the documentation at: https://github.com/arthapz/angie-proxy/#usage
 			EOT
 
 			exit 1
@@ -59,7 +59,7 @@ function _resolvers() {
 	SCOPED_IPV6_REGEX='\[fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}\]'
 
 	if [[ -z ${RESOLVERS} ]]; then
-		echo 'Warning: unable to determine DNS resolvers for nginx' >&2
+		echo 'Warning: unable to determine DNS resolvers for angie' >&2
 		unset RESOLVERS
 	elif [[ ${RESOLVERS} =~ ${SCOPED_IPV6_REGEX} ]]; then
 		echo -n 'Warning: Scoped IPv6 addresses removed from resolvers: ' >&2
@@ -69,8 +69,8 @@ function _resolvers() {
 }
 
 function _setup_dhparam() {
-	# DH params will be supplied for nginx here:
-	local DHPARAM_FILE='/etc/nginx/dhparam/dhparam.pem'
+	# DH params will be supplied for angie here:
+	local DHPARAM_FILE='/etc/angie/dhparam/dhparam.pem'
 
 	# Should be 2048, 3072, or 4096 (default):
 	local FFDHE_GROUP="${DHPARAM_BITS:=4096}"
@@ -96,7 +96,7 @@ function _setup_dhparam() {
 	# Use an existing pre-generated DH group from RFC7919 (https://datatracker.ietf.org/doc/html/rfc7919#appendix-A):
 	local RFC7919_DHPARAM_FILE="/app/dhparam/ffdhe${FFDHE_GROUP}.pem"
 
-	# Provide the DH params file to nginx:
+	# Provide the DH params file to angie:
 	cp "${RFC7919_DHPARAM_FILE}" "${DHPARAM_FILE}"
 }
 
@@ -113,7 +113,7 @@ if [[ $* == 'forego start -r' ]]; then
 	if [ -z "${TRUST_DOWNSTREAM_PROXY}" ]; then
 		cat >&2 <<-EOT
 			Warning: TRUST_DOWNSTREAM_PROXY is not set; defaulting to "true". For security, you should explicitly set TRUST_DOWNSTREAM_PROXY to "false" if there is not a trusted reverse proxy in front of this proxy.
-			Warning: The default value of TRUST_DOWNSTREAM_PROXY might change to "false" in a future version of nginx-proxy. If you require TRUST_DOWNSTREAM_PROXY to be enabled, explicitly set it to "true".
+			Warning: The default value of TRUST_DOWNSTREAM_PROXY might change to "false" in a future version of angie-proxy. If you require TRUST_DOWNSTREAM_PROXY to be enabled, explicitly set it to "true".
 		EOT
 	fi
 fi

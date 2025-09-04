@@ -1,3 +1,0 @@
-networks:
-  default:
-    name: test_events-net
